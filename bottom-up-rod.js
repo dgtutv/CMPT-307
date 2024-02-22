@@ -1,13 +1,14 @@
-//Find the best value achievable for cutting a rod into optimal pieces
-function bottomUpRod(p, n){  //P is an array, p[i] is the price for piece of i inches, n is the length of the rod 
-    if(n === 0){
-        return 0;
+function bottomUpRod(p, n){
+    let r = new Array(n);
+    r[0] = 0;
+    for(let j=1; j<=n; j++){
+        let q = Number.NEGATIVE_INFINITY;
+        for(let i=1; i<=j; i++){
+            q = Math.max(q, p[i]+r[j-i]);
+        }   
+        r[j] = q;
     }
-    let q = Number.NEGATIVE_INFINITY;
-    for(let i=1; i<=n; i++){
-        q = Math.max(q, p[i-1] + bottomUpRod(p, n-i)); 
-    }
-    return q;
+    return r[n];
 }
 
 function measureRuntime(func, ...args) {

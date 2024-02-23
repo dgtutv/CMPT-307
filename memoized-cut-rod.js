@@ -1,7 +1,7 @@
 //Find the best value achievable for cutting a rod into optimal pieces
 function memoizedCutRod(p, n){  
     let r = new Array(n);
-    for(let i=0; i<n; i++){
+    for(let i=0; i<=n; i++){
         r[i] = Number.NEGATIVE_INFINITY;
     }
     return cutRodAux(p, n, r);
@@ -13,12 +13,12 @@ function cutRodAux(p, n, r){    //P is an array, p[i] is the price for piece of 
     }
     let q;
     if(n === 0){
-        q = 0;
+       q = 0;
     }
     else{
         q = Number.NEGATIVE_INFINITY;
     }
-    for(let i=1; i<n; i++){
+    for(let i=1; i<=n; i++){
         q = Math.max(q, p[i]+cutRodAux(p, n-i, r));
     }
     r[n] = q;

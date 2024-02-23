@@ -1,14 +1,15 @@
 function bottomUpRod(p, n){
     let r = new Array(n);
     r[0] = 0;
+    let q;
     for(let j=1; j<=n; j++){
-        let q = Number.NEGATIVE_INFINITY;
+        q = Number.NEGATIVE_INFINITY;
         for(let i=1; i<=j; i++){
             q = Math.max(q, p[i]+r[j-i]);
-        }   
-        r[j] = q;
+        }
+        r[j]=q;
     }
-    return r[n];
+    return(r[n]);
 }
 
 function measureRuntime(func, ...args) {

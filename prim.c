@@ -79,10 +79,24 @@ Graph* generateGraph(int n, int graphDensity){
     graph->nodes[0].numEdges++;
     graph->nodes[i].numEdges++;
 
-    //Add any remaining edges
-    for()
+    //Add any remaining edges (later)
+    return graph
 }
 
 int main(argc, argv[]){
-
+    Graph* graph1 = generateGraph(10, 0);
+    printf("n: ");
+    printf("%d\n", graph1->numNodes);
+    printf("m: ");
+    printf("%d\n", graph1->numEdges);
+    printf("Nodes: ");
+    for(int i=0; i<graph1->numNodes; i++){
+        printf("%d ", graph1->nodes[i].index);
+    }
+    printf("\nEdges: ")
+    for(int i=0; i<graph1->numEdges; i++){
+        printf("(%d, %d) ", graph1->edges.first.index, graph1->edges.second.index);
+    }
+    printf("\n");
+    return 0;
 }

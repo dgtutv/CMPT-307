@@ -21,7 +21,7 @@ struct Edge{
 
 struct Graph{
     int numNodes;
-    int numEdges
+    int numEdges;
     Edge* edges;
     Node* nodes;
 };
@@ -33,6 +33,7 @@ Graph* generateGraph(int n, int graphDensity){
     graph->numNodes = n;
 
     //Initialize our random number generator
+    time_t t;
     srand((unsigned) time(&t));
 
     //Define our number of edges
@@ -59,8 +60,8 @@ Graph* generateGraph(int n, int graphDensity){
 
         //Edge work
         if(i>1){
-            graph->edges[i-1].first = graph->nodes[i-1];
-            graph->edges[i-1].second = graph->nodes[i];
+            graph->edges[i-1].first = &graph->nodes[i-1];
+            graph->edges[i-1].second = &graph->nodes[i];
             graph->edges[i-1].weight = rand() % 30+1;
             
             //Update the edges list and edge count for each node
@@ -71,8 +72,8 @@ Graph* generateGraph(int n, int graphDensity){
         }        
     }
     //Link the first and last edges
-    graph->edges[i].first = graph->nodes[0];
-    graph->edges[i].second = graph->nodes[i];
+    graph->edges[i].first = &graph->nodes[0];
+    graph->edges[i].second = &graph->nodes[i];
     graph->edges[i].weight = rand() % 30+1;
     graph->nodes[0].edges[1] = graph->edges[i];
     graph->nodes[i].edges[1] = graph->edges[i];
@@ -80,10 +81,10 @@ Graph* generateGraph(int n, int graphDensity){
     graph->nodes[i].numEdges++;
 
     //Add any remaining edges (later)
-    return graph
+    return graph;
 }
 
-int main(argc, argv[]){
+int main(){
     Graph* graph1 = generateGraph(10, 0);
     printf("n: ");
     printf("%d\n", graph1->numNodes);
@@ -93,9 +94,9 @@ int main(argc, argv[]){
     for(int i=0; i<graph1->numNodes; i++){
         printf("%d ", graph1->nodes[i].index);
     }
-    printf("\nEdges: ")
+    printf("\nEdges: ");
     for(int i=0; i<graph1->numEdges; i++){
-        printf("(%d, %d) ", graph1->edges.first.index, graph1->edges.second.index);
+        printf("(%d, %d) ", graph1->edges->first->index, graph1->edges->second->index);
     }
     printf("\n");
     return 0;

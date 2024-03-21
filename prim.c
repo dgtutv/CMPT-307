@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
 typedef struct Node Node;
 typedef struct Edge Edge;
@@ -30,6 +31,9 @@ Graph* generateGraph(int n, int graphDensity){
     Graph* graph = (Graph*)malloc(sizeof(Graph));
     graph->nodes = (Node*)malloc(sizeof(Node)*n);
     graph->numNodes = n;
+
+    //Initialize our random number generator
+    srand((unsigned) time(&t));
 
     //Define our number of edges
     switch(graphDensity){

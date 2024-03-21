@@ -8,7 +8,7 @@ typedef struct Graph Graph;
 
 struct Node{
     int index;
-    struct Edge** edges;
+    Edge* edges;
     int numEdges;
 };
 
@@ -28,7 +28,6 @@ struct Graph{
 Graph* generateGraph(int n, int graphDensity){
     int m;
     Graph* graph = (Graph*)malloc(sizeof(Graph));
-    graph->edges = (Edge*)malloc(sizeof(Edge)*m);
     graph->nodes = (Node*)malloc(sizeof(Node)*n);
     graph->numNodes = n;
 
@@ -44,34 +43,37 @@ Graph* generateGraph(int n, int graphDensity){
             m = floor((n*(n-1))/2);
     }
     graph->numEdges = m;
+    graph->edges = (Edge*)malloc(sizeof(Edge)*m);
 
-    //Make a complete graph (link all nodes), as we initialize the nodes
-    for(int i=0; i<n; i++){
+    //Make a connected graph (link all nodes in a cycle), as we initialize the nodes
+    int i;
+    for(i=0; i<n; i++){
+        //Node initialization
         graph->nodes[i].index = i;
         graph->nodes[i].numEdges = 0;
-        graph->nodes[i].edges = NULL;
+        graph->nodes[i].edges = (Edge*)malloc(sizeof(Edge)*2);   //All nodes in a connected graph have 2 edges
+
+        //Edge work
         if(i>1){
             graph->edges[i-1].first = graph->nodes[i-1];
             graph->edges[i-1].second = graph->nodes[i];
-            graph->edges[i-1].weight = rand() % 30;
+            graph->edges[i-1].weight = rand() % 30+1;
             
             //Update the edges list and edge count for each node
-            if(graph->nodes[i-1].edges){
-                Edge* newEdges = (Edge*)malloc(sizeof(Edge)*(graph->nodes[i-1].numEdges + 1));
-                Edge* oldEdges = graph->nodes
-                for(int i=0; i)
-            }
-            else{
-
-            }
-            if(graph->nodes[i].edges){
-
-            }
-            else{
-
-            }
+            graph->nodes[i-1].edges[graph->nodes[i-1].numEdges-1] = graph->edges[i-1];
+            graph->nodes[i].edges[graph->nodes[i].numEdges-1] = graph->edges[i-1];
+            graph->nodes[i-1].numEdges++;
+            graph->nodes[i].numEdges++;
         }        
     }
+    //Link the first and last edges
+    graph->edges[i].first = graph->nodes[0];
+    graph->edges[i].second = graph->nodes[i];
+    graph->edges[i].weight = rand() % 30+1;
+    graph->nodes[0].edges[1] = graph->edges[i];
+    graph->nodes[i].edges[1] = graph->edges[i];
+    graph->nodes[0].numEdges++;
+    graph->nodes[i].numEdges++;
 
     //Add any remaining edges
     for()

@@ -70,12 +70,18 @@ Graph* generateGraph(int n, int graphDensity){
     graph->edges[n-1].first = graph->nodes[n-1];
     graph->edges[n-1].second = graph->nodes[0];
 
-    //Add any remaining edges (later)
+    //Add any remaining edges
+    for(int i=0; i<m-n; i++){
+        graph->edges[n+i].weight = rand()%30+1;
+        graph->edges[n+i].first = graph->nodes[rand()%n];
+        graph->edges[n+i].second = graph->nodes[rand()%n];
+    }
+
     return graph;
 }
 
 int main(){
-    Graph* graph1 = generateGraph(10, 0);
+    Graph* graph1 = generateGraph(20, 2);
     printf("n: ");
     printf("%d\n", graph1->numNodes);
     printf("m: ");

@@ -15,8 +15,8 @@ struct Node{
 
 struct Edge{
     int weight;
-    Node* first;
-    Node* second;
+    Node first;
+    Node second;
 };
 
 struct Graph{
@@ -60,8 +60,8 @@ Graph* generateGraph(int n, int graphDensity){
 
         //Edge work
         if(i>1){
-            graph->edges[i-1].first = &graph->nodes[i-1];
-            graph->edges[i-1].second = &graph->nodes[i];
+            graph->edges[i-1].first = graph->nodes[i-1];
+            graph->edges[i-1].second = graph->nodes[i];
             graph->edges[i-1].weight = rand() % 30+1;
             
             //Update the edges list and edge count for each node
@@ -72,8 +72,8 @@ Graph* generateGraph(int n, int graphDensity){
         }        
     }
     //Link the first and last edges
-    graph->edges[i].first = &graph->nodes[0];
-    graph->edges[i].second = &graph->nodes[i];
+    graph->edges[i].first = graph->nodes[0];
+    graph->edges[i].second = graph->nodes[i];
     graph->edges[i].weight = rand() % 30+1;
     graph->nodes[0].edges[1] = graph->edges[i];
     graph->nodes[i-1].edges[1] = graph->edges[i];
@@ -96,7 +96,7 @@ int main(){
     }
     printf("\nEdges: ");
     for(int i=0; i<graph1->numEdges; i++){
-        printf("(%d, %d) ", graph1->edges[i].first->index, graph1->edges[i].second->index);
+        printf("(%d, %d)", graph1->edges[i].first.index, graph1->edges[i].second.index);
     }
     printf("\n");
     return 0;

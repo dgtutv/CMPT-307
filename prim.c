@@ -6,6 +6,7 @@
 typedef struct Node Node;
 typedef struct Edge Edge;
 typedef struct Graph Graph;
+typedef struct listNode listNode;
 
 struct Node{
     int index;
@@ -24,6 +25,11 @@ struct Graph{
     int numEdges;
     Edge* edges;
     Node* nodes;
+};
+
+struct listNode{
+    int index;
+    listNode* next;
 };
 
 Graph* generateGraph(int n, int graphDensity){
@@ -83,17 +89,17 @@ Graph* generateGraph(int n, int graphDensity){
 int** convertToMatrix(Graph* G){
     //Allocate memory for an array of int pointers
     int** outputMatrix = (int**)malloc(G->numNodes * sizeof(int*));
-    for(int i = 0; i < G->numNodes; i++){
-        // llocate memory for an array of ints for each node
+    for(int i=0; i<G->numNodes; i++){
+        //Allocate memory for an array of ints for each node
         outputMatrix[i] = (int*)malloc(G->numNodes * sizeof(int));
-        for(int j = 0; j < G->numNodes; j++){
+        for(int j=0; j<G->numNodes; j++){
             //Initialize each cell to 0
             outputMatrix[i][j] = 0;
         }
     }
 
-    for(int i = 0; i < G->numNodes; i++){
-        for(int j = 0; j < G->numNodes; j++){
+    for(int i=0; i<G->numNodes; i++){
+        for(int j=0; j<G->numNodes; j++){
             //Look for edges between i and j
             for(int k = 0; k < G->numEdges; k++){
                 if(G->edges[k].first.index == i && G->edges[k].second.index == j){
@@ -108,6 +114,38 @@ int** convertToMatrix(Graph* G){
         }
     }
     return outputMatrix;
+}
+
+listNode** convertToList(Graph* G){
+    listNode** outputLists = (listNode**)malloc(sizeof(listNode*) * G->numNodes);   //Allocate memory for the list of lists
+    Edge currentEdge;
+    listNode* currentNode;
+    listNode* nextNode;
+    for(int i=0; i<G->numNodes; i++){
+        currentNode = outputLists[i];   //initially we set the currentNode to the first node in the list
+        for(int j=0; j<G->nodes[i].numEdges; j++){
+            currentEdge = G->nodes[i].edges[j];
+
+            //Find if the connected node is the first or second node of the current edge
+            if(currentEdge.first.index == i){
+                currentNode->index = currentEdge.second.index;
+            }
+            else{
+                currentNode->index = currentEdge.first.index;
+            }
+
+            //Allocate space for next node, if not the last node in the list
+            if(i < G->numNodes-1){
+                currentNode->next = (listNode*)malloc(sizeof(listNode*));
+            }
+            else{
+                currentNode->next = NULL;
+            }
+            currentNode = currentNode->next;
+        }
+    }
+
+    return outputLists;
 }
 
 int main(){
@@ -211,10 +249,16 @@ int main(){
 
     //Convert fig1 into an adjacency matrix
     int** fig1Matrix = convertToMatrix(fig1);
-    printf("Adjacency matrix for fig1:\n");
+
+    //Convert fig1 into an adjacency list
+    listNode** fig1List = convertToList(fig1);
+    printf("Figure 1 as an adjacency list: \n");
+    listNode* curr;
     for(int i=0; i<9; i++){
-        for(int j=0; j<9; j++){
-            printf("%d ", fig1Matrix[i][j]);
+        curr = fig1List[i];
+        while(curr!=NULL){
+            printf("%d -> ", curr->index);
+            curr = curr->next;
         }
         printf("\n");
     }

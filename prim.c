@@ -76,7 +76,7 @@ Graph* generateGraph(int n, int graphDensity){
     graph->edges[i].second = &graph->nodes[i];
     graph->edges[i].weight = rand() % 30+1;
     graph->nodes[0].edges[1] = graph->edges[i];
-    graph->nodes[i].edges[1] = graph->edges[i];
+    graph->nodes[i-1].edges[1] = graph->edges[i];
     graph->nodes[0].numEdges++;
     graph->nodes[i].numEdges++;
 
@@ -96,7 +96,7 @@ int main(){
     }
     printf("\nEdges: ");
     for(int i=0; i<graph1->numEdges; i++){
-        printf("(%d, %d) ", graph1->edges->first->index, graph1->edges->second->index);
+        printf("(%d, %d) ", graph1->edges[i].first->index, graph1->edges[i].second->index);
     }
     printf("\n");
     return 0;

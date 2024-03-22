@@ -118,35 +118,41 @@ int** convertToMatrix(Graph* G){
 
 listNode** convertToList(Graph* G){
     listNode** outputLists = (listNode**)malloc(sizeof(listNode*) * G->numNodes);   //Allocate memory for the list of lists
-    Edge currentEdge;
-    listNode* currentNode;
-    listNode* nextNode;
     for(int i=0; i<G->numNodes; i++){
-        currentNode = outputLists[i];   //initially we set the currentNode to the first node in the list
-        for(int j=0; j<G->nodes[i].numEdges; j++){
-            currentEdge = G->nodes[i].edges[j];
+        outputLists[i] = NULL;
+    }
 
+    for(int i=0; i<G->numNodes; i++){
+        //Initialize the head node for the current list
+        listNode* head = NULL;
+        listNode* currentNode = NULL;
+
+        for(int j=0; j<G->nodes[i].numEdges; j++){
+            Edge currentEdge = G->nodes[i].edges[j];
+
+            listNode* newNode = (listNode*)malloc(sizeof(listNode));
             //Find if the connected node is the first or second node of the current edge
             if(currentEdge.first.index == i){
-                currentNode->index = currentEdge.second.index;
+                newNode->index = currentEdge.second.index;
+            } else {
+                newNode->index = currentEdge.first.index;
             }
-            else{
-                currentNode->index = currentEdge.first.index;
-            }
+            newNode->next = NULL;
 
-            //Allocate space for next node, if not the last node in the list
-            if(i < G->numNodes-1){
-                currentNode->next = (listNode*)malloc(sizeof(listNode*));
+            if(head == NULL){
+                head = newNode; //Set the first node as head
             }
             else{
-                currentNode->next = NULL;
+                currentNode->next = newNode; 
             }
-            currentNode = currentNode->next;
+            currentNode = newNode;
         }
+        outputLists[i] = head; //Assign the head to the output array
     }
 
     return outputLists;
 }
+
 
 int main(){
     //Generate the graph in figure 1, a-i = 0-8

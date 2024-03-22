@@ -80,6 +80,27 @@ Graph* generateGraph(int n, int graphDensity){
     return graph;
 }
 
+int** convertToMatrix(Graph* G){
+    int** outputMatrix = (int**)malloc(sizeof(int)*G->numNodes*G->numNodes);
+    for(int i=0; i<G->numNodes; i++){
+        for(int j=0; j<G->numNodes; j++){
+            //Search all edges, if there is an edge that contains i & j, mark outputMatrix[i][j] as 1
+            for(int k=0; k<G->numEdges; k++){
+                if(G->edges[k].first.index == i && G->edges[k].second.index == j){
+                    outputMatrix[i][j] = 1;
+                }
+                else if(G->edges[k].first.index == j && G->edges[k].second.index == i){
+                    outputMatrix[i][j] = 1;
+                }
+                else{
+                    outputMatrix[i][j] = 0;
+                }
+            }
+        }
+    }
+    return outputMatrix;
+}
+
 int main(){
     //Generate the graph in figure 1, a-i = 0-8
     Graph* fig1 = (Graph*)malloc(sizeof(Graph));
@@ -179,16 +200,14 @@ int main(){
     fig1->nodes[5].edges[2] = fig1->edges[12];
     fig1->nodes[5].edges[3] = fig1->edges[13];
 
-    printf("n: %d\n", fig1->numNodes);
-    printf("m: %d\n", fig1->numEdges);
-    printf("Nodes: ");
-    for(int i = 0; i < fig1->numNodes; i++){
-        printf("%d ", fig1->nodes[i].index);
+    //Convert fig1 into an adjacency matrix
+    int** fig1Matrix = convertToMatrix(fig1);
+    printf("Adjacency matrix for fig1:\n");
+    for(int i=0; i<9; i++){
+        for(int j=0; j<9; j++){
+            printf("%d ", fig1Matrix[i][j]);
+        }
+        printf("\n");
     }
-    printf("\nEdges: ");
-    for(int i = 0; i < fig1->numEdges; i++){
-        printf("(%d, %d) ", fig1->edges[i].first.index, fig1->edges[i].second.index);
-    }
-    printf("\n");
     return 0;
 }

@@ -85,6 +85,8 @@ int main(){
     Graph* fig1 = (Graph*)malloc(sizeof(Graph));
     fig1->numNodes = 9;
     fig1->numEdges = 14;
+    fig1->nodes = (Node*)malloc(sizeof(Node)*9);
+    fig1->edges = (Edge*)malloc(sizeof(Edge)*14);
     for(int i=0; i<fig1->numNodes; i++){    //Initialize our nodes
         fig1->nodes[i].index = i;
     }   

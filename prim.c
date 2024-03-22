@@ -176,5 +176,17 @@ int main(){
     fig1->nodes[5].edges[1] = fig1->edges[9];
     fig1->nodes[5].edges[2] = fig1->edges[12];
     fig1->nodes[5].edges[3] = fig1->edges[13];
+
+    printf("n: %d\n", fig1->numNodes);
+    printf("m: %d\n", fig1->numEdges);
+    printf("Nodes: ");
+    for(int i = 0; i < fig1->numNodes; i++){
+        printf("%d ", fig1->nodes[i].index);
+    }
+    printf("\nEdges: ");
+    for(int i = 0; i < fig1->numEdges; i++){
+        printf("(%d, %d) ", fig1->edges[i].first.index, fig1->edges[i].second.index);
+    }
+    printf("\n");
     return 0;
 }

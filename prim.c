@@ -81,19 +81,28 @@ Graph* generateGraph(int n, int graphDensity){
 }
 
 int** convertToMatrix(Graph* G){
-    int** outputMatrix = (int**)malloc(sizeof(int)*G->numNodes*G->numNodes);
-    for(int i=0; i<G->numNodes; i++){
-        for(int j=0; j<G->numNodes; j++){
-            //Search all edges, if there is an edge that contains i & j, mark outputMatrix[i][j] as 1
-            for(int k=0; k<G->numEdges; k++){
+    //Allocate memory for an array of int pointers
+    int** outputMatrix = (int**)malloc(G->numNodes * sizeof(int*));
+    for(int i = 0; i < G->numNodes; i++){
+        // llocate memory for an array of ints for each node
+        outputMatrix[i] = (int*)malloc(G->numNodes * sizeof(int));
+        for(int j = 0; j < G->numNodes; j++){
+            //Initialize each cell to 0
+            outputMatrix[i][j] = 0;
+        }
+    }
+
+    for(int i = 0; i < G->numNodes; i++){
+        for(int j = 0; j < G->numNodes; j++){
+            //Look for edges between i and j
+            for(int k = 0; k < G->numEdges; k++){
                 if(G->edges[k].first.index == i && G->edges[k].second.index == j){
                     outputMatrix[i][j] = 1;
+                    break; 
                 }
                 else if(G->edges[k].first.index == j && G->edges[k].second.index == i){
                     outputMatrix[i][j] = 1;
-                }
-                else{
-                    outputMatrix[i][j] = 0;
+                    break; 
                 }
             }
         }

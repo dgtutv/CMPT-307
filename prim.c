@@ -234,7 +234,7 @@ void printMSTList(int parent[], int numVertices, listNode** graph){
 //Returns weight of edge if elgible to be added to MST, returns -1 upon failure
 int primEdgeCheck(listNode** graph, int u, int v, int key[], bool mstSet[]){
     listNode* curr = graph[u];
-    while(curr != NULL){
+    while(curr != NULL){    //No weight or index set, seems to be an issue with generateGraph()
         if(curr->index == v && curr->weight != INT_MAX && !mstSet[v] && curr->weight < key[v]){
             return curr->weight;
         }

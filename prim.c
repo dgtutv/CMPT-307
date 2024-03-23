@@ -180,7 +180,7 @@ void printMSTArray(int parent[], int numVertices, int** graphArray){
     }
 }
 
-void primArray(int numVertices, int** graph){
+void primArray(int numVertices, int** graph, bool print){
     int parent[numVertices];    //Array to store constructed MST
     int key[numVertices];   //Key values used to pick minimum weight edge in cut
     bool mstSet[numVertices];   //To represent the set of vertices included in MST
@@ -206,7 +206,9 @@ void primArray(int numVertices, int** graph){
             }
         }
     }
-    printMSTArray(parent, numVertices, graph);
+    if(print){
+        printMSTArray(parent, numVertices, graph);
+    }
 }
 
 /*My adaptation of Geeks4Geek's Prim's Algorithm to list based graphs instead of adjacency matrices*/
@@ -241,7 +243,7 @@ int primEdgeCheck(listNode** graph, int u, int v, int key[], bool mstSet[]){
     return -1;
 }
 
-void primList(int numVertices, listNode** graph){
+void primList(int numVertices, listNode** graph, bool print){
     int parent[numVertices];    //Array to store constructed MST
     int key[numVertices];   //Key values used to pick minimum weight edge in cut
     bool mstSet[numVertices];   //To represent the set of vertices included in MST
@@ -270,18 +272,20 @@ void primList(int numVertices, listNode** graph){
             }
         }
     }
-    printMSTList(parent, numVertices, graph);
+    if(print){
+        printMSTList(parent, numVertices, graph);
+    }
 }
 
 int main(){
     //Create our timing variables
     clock_t start, end;
-    double times[5][2]; //Table of runtimes
+    double fig1Times[5][2]; //Table of runtimes
     
     //Initialize all of our runtimes to -1
     for(int i=0; i<5; i++){
         for(int j=0; j<2; j++){
-            times[i][j] = -1;
+            fig1Times[i][j] = -1;
         }
     }
 
@@ -399,9 +403,9 @@ int main(){
     //Calculate MST for fig1 in adjacency matrix form and print
     printf("\nMST for fig1 using adjacency matrix form:\n");
     start = clock();
-    primArray(fig1->numNodes, fig1Matrix);
+    primArray(fig1->numNodes, fig1Matrix, true);
     end = clock();
-    times[0][0] = ((double) (end - start)) / CLOCKS_PER_SEC * 1000;
+    fig1Times[0][0] = ((double) (end - start)) / CLOCKS_PER_SEC * 1000;
 
     //Free allocated memory for adjacency matrix
     for(int i = 0; i < fig1->numNodes; i++) {
@@ -431,13 +435,39 @@ int main(){
     //Calculate MST for fig1 in adjacency list form
     printf("\nMST for fig1 using adjacency list form:\n");
     start = clock();
-    primList(fig1->numNodes, fig1List);
+    primList(fig1->numNodes, fig1List, true);
     printf("\n");
     end = clock();
-    times[0][1] = ((double) (end - start)) / CLOCKS_PER_SEC * 1000;
+    fig1Times[0][1] = ((double) (end - start)) / CLOCKS_PER_SEC * 1000;
 
-    //Print our table of times
-    printf("Runtime Table in milliseconds:\n");
-    printf("\t\tMatrix \t\tList\nFigure 1: \t%f \t%f \n", times[0][0], times[0][1]);
+    //Print our table of times for figure 1
+    printf("Runtime Table in milliseconds for figure 1:\n");
+    printf("\t\tMatrix \t\tList\nFigure 1: \t%f \t%f \n", fig1Times[0][0], fig1Times[0][1]);
+
+    //Generate all the runtimes for each n and m provided
+    double times[4][6];
+    int i=0;
+    for(int n=100; n<1000; n=n*2){
+        for(int j=0; j<3; j++){     //j determines m via switch case
+            Graph* currentGraph = generateGraph(n, j);
+            int** currentMatrix = convertToMatrix(currentGraph);
+
+            start = clock();
+            primArray(currentGraph->numNodes, currentMatrix, false);
+            end = clock();
+            times[i][j] = ((double) (end - start)) / CLOCKS_PER_SEC * 1000;
+
+            listNode** currentList = convertToList(currentGraph);
+            start = clock();
+            primList(currentGraph->numNodes, currentList, false);
+            end = clock();
+            times[i][j+2] = ((double) (end - start)) / CLOCKS_PER_SEC * 1000;
+        }
+        i++;
+    }
+
+    //Print our table of times for n and m specified
+    printf("Runtime Table in milliseconds for specified n and m:\n");
+    
     return 0;
 }

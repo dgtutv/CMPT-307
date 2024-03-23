@@ -209,6 +209,26 @@ void primArray(int numVertices, int** graph){
     printMSTArray(parent, numVertices, graph);
 }
 
+/*My adaptation of Geeks4Geek's Prim's Algorithm to list based graphs instead of adjacency matrices*/
+void printMSTList(int parent[], int numVertices, listNode** graph){
+    printf("Edge \tWeight\n");
+    for(int i=1; i<numVertices; i++){
+        if(parent[i] != -1){
+            //Find the weight of the associated edge
+            int currWeight = -1;
+            listNode* curr = graph[parent[i]];
+            while(curr != NULL){
+                if(curr->index == i){
+                    currWeight = curr->weight;
+                }
+                curr = curr->next;
+            }
+
+            printf("%d - %d \t%d \n", parent[i], i, currWeight);
+        }
+    }
+}
+
 int main(){
     //Create our timing variables
     clock_t start, end;

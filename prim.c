@@ -210,6 +210,17 @@ void primArray(int numVertices, int** graph){
 }
 
 int main(){
+    //Create our timing variables
+    clock_t start, end;
+    double times[5][2]; //Table of runtimes
+    
+    //Initialize all of our runtimes to -1
+    for(int i=0; i<5; i++){
+        for(int j=0; j<2; j++){
+            times[i][j] = -1;
+        }
+    }
+
     //Generate the graph in figure 1, a-i = 0-8
     Graph* fig1 = (Graph*)malloc(sizeof(Graph));
     fig1->numNodes = 9;
@@ -317,9 +328,14 @@ int main(){
         }
         printf("\n");
     }
+    printf("\n");
 
     //Calculate MST for fig1 in adjacency matrix form
+    start = clock();
     primArray(fig1->numNodes, fig1Matrix);
+    printf("\n");
+    end = clock();
+    times[0][0] = ((double) (end - start)) / CLOCKS_PER_SEC * 1000;
 
     //Free allocated memory for adjacency matrix
     for(int i = 0; i < fig1->numNodes; i++) {
@@ -329,5 +345,9 @@ int main(){
 
     //Convert fig1 into an adjacency list
     listNode** fig1List = convertToList(fig1);
+
+    //Print our table of times
+    printf("Runtime Table in milliseconds:\n");
+    printf("\t\tMatrix \t\tList\nFigure 1: \t %f \t %f \n", times[0][0], times[0][1]);
     return 0;
 }

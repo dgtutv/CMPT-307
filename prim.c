@@ -100,14 +100,14 @@ int** convertToMatrix(Graph* G){
 
     for(int i=0; i<G->numNodes; i++){
         for(int j=0; j<G->numNodes; j++){
-            //Look for edges between i and j
+            //Look for edges between i and j         
             for(int k = 0; k < G->numEdges; k++){
                 if(G->edges[k].first.index == i && G->edges[k].second.index == j){
-                    outputMatrix[i][j] = 1;
+                    outputMatrix[i][j] = G->edges[k].weight;
                     break; 
                 }
                 else if(G->edges[k].first.index == j && G->edges[k].second.index == i){
-                    outputMatrix[i][j] = 1;
+                    outputMatrix[i][j] = G->edges[k].weight;
                     break; 
                 }
             }
@@ -255,6 +255,13 @@ int main(){
 
     //Convert fig1 into an adjacency matrix
     int** fig1Matrix = convertToMatrix(fig1);
+    printf("Adjacency matrix for fig1:\n");
+    for(int i=0; i<9; i++){
+        for(int j=0; j<9; j++){
+            printf("%d ", fig1Matrix[i][j]);
+        }
+        printf("\n");
+    }
 
     //Convert fig1 into an adjacency list
     listNode** fig1List = convertToList(fig1);

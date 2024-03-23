@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <limits.h>
+#include <stdbool.h>
 
 typedef struct Node Node;
 typedef struct Edge Edge;
@@ -155,6 +157,57 @@ listNode** convertToList(Graph* G){
     return outputLists;
 }
 
+/*Prim's algorithm for arrays, largely followed by geek4geeks*/
+
+//Used to find the vertex with the minimum key value, from the set of verices not yet in the MST
+int minKey(int key[], bool mstSet[], int numVertices){
+    int min = INT_MAX, minIndex = -1; //Initialize minIndex to -1
+    for(int v=0; v<numVertices; v++){
+        if(!mstSet[v] && key[v] < min){
+            min = key[v];
+            minIndex = v;
+        }
+    }
+    return minIndex;
+}
+
+void printMSTArray(int parent[], int numVertices, int** graphArray){
+    printf("Edge \tWeight\n");
+    for(int i=1; i<numVertices; i++){
+        if(parent[i] != -1){
+            printf("%d - %d \t%d \n", parent[i], i, graphArray[i][parent[i]]);
+        }
+    }
+}
+
+void primArray(int numVertices, int** graph){
+    int parent[numVertices];    //Array to store constructed MST
+    int key[numVertices];   //Key values used to pick minimum weight edge in cut
+    bool mstSet[numVertices];   //To represent the set of vertices included in MST
+
+    //Initialize all keys to infinite
+    for(int i = 0; i < numVertices; i++){
+        key[i] = INT_MAX;
+        mstSet[i] = false;
+    }
+
+    //Include the first vertex in MST
+    key[0] = 0;     //Make key 0 so that this vertex is picked as the first vertex
+    parent[0] = -1; //First node is always root of MST
+
+    for(int count = 0; count < numVertices - 1; count++){
+        int u = minKey(key, mstSet, numVertices);
+        mstSet[u] = true;
+
+        for(int v = 0; v < numVertices; v++){
+            if(graph[u][v] && graph[u][v] != INT_MAX && !mstSet[v] && graph[u][v] < key[v]){
+                parent[v] = u;
+                key[v] = graph[u][v];
+            }
+        }
+    }
+    printMSTArray(parent, numVertices, graph);
+}
 
 int main(){
     //Generate the graph in figure 1, a-i = 0-8
@@ -265,17 +318,16 @@ int main(){
         printf("\n");
     }
 
+    //Calculate MST for fig1 in adjacency matrix form
+    primArray(fig1->numNodes, fig1Matrix);
+
+    //Free allocated memory for adjacency matrix
+    for(int i = 0; i < fig1->numNodes; i++) {
+        free(fig1Matrix[i]);
+    }
+    free(fig1Matrix);
+
     //Convert fig1 into an adjacency list
     listNode** fig1List = convertToList(fig1);
-    printf("Figure 1 as an adjacency list: \n");
-    listNode* curr;
-    for(int i=0; i<9; i++){
-        curr = fig1List[i];
-        while(curr!=NULL){
-            printf("%d -%d-> ", curr->index, curr->weight);
-            curr = curr->next;
-        }
-        printf("\n");
-    }
     return 0;
 }

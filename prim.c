@@ -229,6 +229,50 @@ void printMSTList(int parent[], int numVertices, listNode** graph){
     }
 }
 
+//Returns weight of edge if elgible to be added to MST, returns -1 upon failure
+int primEdgeCheck(listNode** graph, int u, int v, int key[], bool mstSet[]){
+    listNode* curr = graph[u];
+    while(curr != NULL){
+        if(curr->index == v && curr->weight != INT_MAX && !mstSet[v] && curr->weight < key[v]){
+            return curr->weight;
+        }
+        curr = curr->next;
+    }
+    return -1;
+}
+
+void primList(int numVertices, listNode** graph){
+    int parent[numVertices];    //Array to store constructed MST
+    int key[numVertices];   //Key values used to pick minimum weight edge in cut
+    bool mstSet[numVertices];   //To represent the set of vertices included in MST
+
+    //Initialize all keys to infinite
+    for(int i = 0; i < numVertices; i++){
+        key[i] = INT_MAX;
+        mstSet[i] = false;
+    }
+
+    //Include the first vertex in MST
+    key[0] = 0;     //Make key 0 so that this vertex is picked as the first vertex
+    parent[0] = -1; //First node is always root of MST
+
+    for(int count = 0; count < numVertices - 1; count++){
+        int u = minKey(key, mstSet, numVertices);
+        mstSet[u] = true;
+
+        for(int v = 0; v < numVertices; v++){
+            //If there is an edge between u & v AND the edge's weight is not infinity AND the vertex hasnt been set 
+            //AND the edge's weight is less than the smallest edge for that given key
+            int weightChecked = primEdgeCheck(graph, u, v, key, mstSet);
+            if(weightChecked != -1){
+                parent[v] = u;
+                key[v] = weightChecked;
+            }
+        }
+    }
+    printMSTList(parent, numVertices, graph);
+}
+
 int main(){
     //Create our timing variables
     clock_t start, end;
@@ -339,21 +383,23 @@ int main(){
     fig1->nodes[5].edges[2] = fig1->edges[12];
     fig1->nodes[5].edges[3] = fig1->edges[13];
 
-    //Convert fig1 into an adjacency matrix
+    //Convert fig1 into an adjacency matrix and print
     int** fig1Matrix = convertToMatrix(fig1);
-    printf("Adjacency matrix for fig1:\n");
-    for(int i=0; i<9; i++){
-        for(int j=0; j<9; j++){
-            printf("%d ", fig1Matrix[i][j]);
+
+    printf("\nAdjacency Matrix for fig 1:\n");
+    for(int i = 0; i < 9; i++) {
+        for(int j = 0; j < 9; j++) {
+            printf("%3d", fig1Matrix[i][j]);
         }
         printf("\n");
     }
     printf("\n");
 
-    //Calculate MST for fig1 in adjacency matrix form
+
+    //Calculate MST for fig1 in adjacency matrix form and print
+    printf("\nMST for fig1 using adjacency matrix form:\n");
     start = clock();
     primArray(fig1->numNodes, fig1Matrix);
-    printf("\n");
     end = clock();
     times[0][0] = ((double) (end - start)) / CLOCKS_PER_SEC * 1000;
 
@@ -365,9 +411,33 @@ int main(){
 
     //Convert fig1 into an adjacency list
     listNode** fig1List = convertToList(fig1);
+    printf("\nAdjacency list for fig 1:\n");
+    listNode* curr;
+    for(int i=0; i<9; i++){
+        curr = fig1List[i];
+        printf("%d.  ", i);
+        while(curr!=NULL){
+            if(curr->next != NULL){
+                printf("%d(%d) ---> ", curr->index, curr->weight);
+            }
+            else{
+                printf("%d(%d).", curr->index, curr->weight);
+            }
+            curr = curr->next;
+        }
+        printf("\n");
+    }
+
+    //Calculate MST for fig1 in adjacency list form
+    printf("\nMST for fig1 using adjacency list form:\n");
+    start = clock();
+    primList(fig1->numNodes, fig1List);
+    printf("\n");
+    end = clock();
+    times[0][1] = ((double) (end - start)) / CLOCKS_PER_SEC * 1000;
 
     //Print our table of times
     printf("Runtime Table in milliseconds:\n");
-    printf("\t\tMatrix \t\tList\nFigure 1: \t %f \t %f \n", times[0][0], times[0][1]);
+    printf("\t\tMatrix \t\tList\nFigure 1: \t%f \t%f \n", times[0][0], times[0][1]);
     return 0;
 }

@@ -30,6 +30,7 @@ struct Graph{
 struct listNode{
     int index;
     listNode* next;
+    int weight;
 };
 
 Graph* generateGraph(int n, int graphDensity){
@@ -137,6 +138,7 @@ listNode** convertToList(Graph* G){
             } else {
                 newNode->index = currentEdge.first.index;
             }
+            newNode->weight = currentEdge.weight;
             newNode->next = NULL;
 
             if(head == NULL){
@@ -270,7 +272,7 @@ int main(){
     for(int i=0; i<9; i++){
         curr = fig1List[i];
         while(curr!=NULL){
-            printf("%d -> ", curr->index);
+            printf("%d -%d-> ", curr->index, curr->weight);
             curr = curr->next;
         }
         printf("\n");

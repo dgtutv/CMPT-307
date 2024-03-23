@@ -468,6 +468,12 @@ int main(){
 
     //Print our table of times for n and m specified
     printf("Runtime Table in milliseconds for specified n and m:\n");
-    
+    printf("\t\t\t\t Matrix \t\t\t\t List\n");
+    printf("\t\tm=3n\tm=n^1.5\tm=n(n-1)/2\tm=3n\tm=n^1.5\tm=n(n-1)/2");
+    i=0;
+    for(int n=100; n<1000; n=n*2){
+        printf("n=%d\t%f\t%f\t%f\t%f\t%f\t%f\n", n, times[i][0], times[i][1], times[i][2], times[i][3], times[i][4], times[i][5]);
+        i++;
+    }
     return 0;
 }

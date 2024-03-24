@@ -1,18 +1,20 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <time.h>
-#include <limits.h>
-#include <stdbool.h>
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+#include <cmath>
+#include <climits>
+#include <list>
 
 typedef struct Node Node;
 typedef struct Edge Edge;
 typedef struct Graph Graph;
 typedef struct listNode listNode;
+using namespace std;
 
 struct Node{
     int index;
-    Edge* edges;
+    vector<Edge*> edges;
     int numEdges;
 };
 
@@ -35,11 +37,6 @@ struct listNode{
     int weight;
 };
 
-void addEdgeToNode(Graph* G, int nodeIndex, int edgeIndex) {
-    G->nodes[nodeIndex].numEdges++;
-    G->nodes[nodeIndex].edges = (Edge*)realloc(G->nodes[nodeIndex].edges, sizeof(Edge)*G->nodes[nodeIndex].numEdges);
-    G->nodes[nodeIndex].edges[G->nodes[nodeIndex].numEdges - 1] = G->edges[edgeIndex];
-}
 
 Graph* generateGraph(int n, int graphDensity) {
     int m;
@@ -60,28 +57,9 @@ Graph* generateGraph(int n, int graphDensity) {
     graph->numEdges = m;
     graph->edges = (Edge*)malloc(sizeof(Edge) * m);
 
-    // Initialize nodes.
-    for(int i=0; i<n; i++) {
-        graph->nodes[i].index = i;
-        graph->nodes[i].edges = NULL;
-        graph->nodes[i].numEdges = 0;
-    }
+    //Initialize our nodes
 
-    // Create edges and link nodes.
-    for(int i=0; i<m; i++) {
-        int node1Index = rand() % n;
-        int node2Index = rand() % n;
-        while(node2Index == node1Index) { //Ensure we don't link a node to itself.
-            node2Index = rand() % n;
-        }
-        
-        graph->edges[i].weight = rand() % 30 + 1;
-        graph->edges[i].first = &graph->nodes[node1Index];
-        graph->edges[i].second = &graph->nodes[node2Index];
-        
-        addEdgeToNode(graph, node1Index, i);
-        addEdgeToNode(graph, node2Index, i);
-    }
+    //Initialize our edges
 
     return graph;
 }
@@ -128,16 +106,16 @@ listNode** convertToList(Graph* G){
         listNode* currentNode = NULL;
 
         for(int j=0; j<G->nodes[i].numEdges; j++){
-            Edge currentEdge = G->nodes[i].edges[j];
+            Edge* currentEdge = G->nodes[i].edges.at(j);
 
             listNode* newNode = (listNode*)malloc(sizeof(listNode));
             //Find if the connected node is the first or second node of the current edge
-            if(currentEdge.first->index == i){
-                newNode->index = currentEdge.second->index;
+            if(currentEdge->first->index == i){
+                newNode->index = currentEdge->second->index;
             } else {
-                newNode->index = currentEdge.first->index;
+                newNode->index = currentEdge->first->index;
             }
-            newNode->weight = currentEdge.weight;
+            newNode->weight = currentEdge->weight;
             newNode->next = NULL;
 
             if(head == NULL){
@@ -299,90 +277,81 @@ int main(){
     fig1->edges[0].weight = 4;
     fig1->edges[0].first = &fig1->nodes[0];
     fig1->edges[0].second = &fig1->nodes[1];
-    fig1->nodes[0].edges = (Edge*)malloc(sizeof(Edge)*2);
-    fig1->nodes[0].edges[0] = fig1->edges[0];
+    fig1->nodes[0].edges[0] = &fig1->edges[0];
     fig1->edges[1].weight = 8;
     fig1->edges[1].first = &fig1->nodes[0];
     fig1->edges[1].second = &fig1->nodes[7];
-    fig1->nodes[0].edges[1] = fig1->edges[1];
+    fig1->nodes[0].edges[1] = &fig1->edges[1];
     fig1->nodes[1].numEdges = 3;
-    fig1->nodes[1].edges = (Edge*)malloc(sizeof(Edge)*3);
-    fig1->nodes[1].edges[0] = fig1->edges[0];
+    fig1->nodes[1].edges[0] = &fig1->edges[0];
     fig1->edges[2].weight = 8;
     fig1->edges[2].first = &fig1->nodes[1];
     fig1->edges[2].second = &fig1->nodes[2];
-    fig1->nodes[1].edges[1] = fig1->edges[2];
+    fig1->nodes[1].edges[1] = &fig1->edges[2];
     fig1->edges[3].weight = 11;
     fig1->edges[3].first = &fig1->nodes[1];
     fig1->edges[3].second = &fig1->nodes[7];
-    fig1->nodes[1].edges[2] = fig1->edges[3];
+    fig1->nodes[1].edges[2] = &fig1->edges[3];
     fig1->nodes[7].numEdges = 4;
-    fig1->nodes[7].edges = (Edge*)malloc(sizeof(Edge)*4);
-    fig1->nodes[7].edges[0] = fig1->edges[1];
-    fig1->nodes[7].edges[1] = fig1->edges[3];
+    fig1->nodes[7].edges[0] = &fig1->edges[1];
+    fig1->nodes[7].edges[1] = &fig1->edges[3];
     fig1->edges[4].weight = 7;
     fig1->edges[4].first = &fig1->nodes[7];
     fig1->edges[4].second = &fig1->nodes[8];
-    fig1->nodes[7].edges[2] = fig1->edges[4];
+    fig1->nodes[7].edges[2] = &fig1->edges[4];
     fig1->edges[5].weight = 1;
     fig1->edges[5].first = &fig1->nodes[7];
     fig1->edges[5].second = &fig1->nodes[6];
-    fig1->nodes[7].edges[3] = fig1->edges[5];
+    fig1->nodes[7].edges[3] = &fig1->edges[5];
     fig1->nodes[8].numEdges = 3;
-    fig1->nodes[8].edges = (Edge*)malloc(sizeof(Edge)*3);
-    fig1->nodes[8].edges[0] = fig1->edges[4];
+    fig1->nodes[8].edges[0] = &fig1->edges[4];
     fig1->edges[6].weight = 2;
     fig1->edges[6].first = &fig1->nodes[8];
     fig1->edges[6].second = &fig1->nodes[2];
-    fig1->nodes[8].edges[1] = fig1->edges[6];
+    fig1->nodes[8].edges[1] = &fig1->edges[6];
     fig1->edges[7].weight = 6;
     fig1->edges[7].first = &fig1->nodes[8];
     fig1->edges[7].second = &fig1->nodes[6];
-    fig1->nodes[8].edges[2] = fig1->edges[7];
+    fig1->nodes[8].edges[2] = &fig1->edges[7];
     fig1->nodes[2].numEdges = 4;
-    fig1->nodes[2].edges = (Edge*)malloc(sizeof(Edge)*4);
-    fig1->nodes[2].edges[0] = fig1->edges[2];
-    fig1->nodes[2].edges[1] = fig1->edges[6];
+    fig1->nodes[2].edges[0] = &fig1->edges[2];
+    fig1->nodes[2].edges[1] = &fig1->edges[6];
     fig1->edges[8].weight = 7;
     fig1->edges[8].first = &fig1->nodes[2];
     fig1->edges[8].second = &fig1->nodes[3];
-    fig1->nodes[2].edges[2] = fig1->edges[8];
+    fig1->nodes[2].edges[2] = &fig1->edges[8];
     fig1->edges[9].weight = 4;
     fig1->edges[9].first = &fig1->nodes[2];
     fig1->edges[9].second = &fig1->nodes[5];
-    fig1->nodes[2].edges[3] = fig1->edges[9];
+    fig1->nodes[2].edges[3] = &fig1->edges[9];
     fig1->nodes[6].numEdges = 3;
-    fig1->nodes[6].edges = (Edge*)malloc(sizeof(Edge)*3);
-    fig1->nodes[6].edges[0] = fig1->edges[5];
-    fig1->nodes[6].edges[1] = fig1->edges[7];
+    fig1->nodes[6].edges[0] = &fig1->edges[5];
+    fig1->nodes[6].edges[1] = &fig1->edges[7];
     fig1->edges[10].weight = 2;
     fig1->edges[10].first = &fig1->nodes[6];
     fig1->edges[10].second = &fig1->nodes[5];
-    fig1->nodes[6].edges[2] = fig1->edges[10];
+    fig1->nodes[6].edges[2] = &fig1->edges[10];
     fig1->nodes[3].numEdges = 3;
-    fig1->nodes[3].edges = (Edge*)malloc(sizeof(Edge)*3);
-    fig1->nodes[3].edges[0] = fig1->edges[8];
+    fig1->nodes[3].edges[0] = &fig1->edges[8];
     fig1->edges[11].weight = 9;
     fig1->edges[11].first = &fig1->nodes[3];
     fig1->edges[11].second = &fig1->nodes[4];
-    fig1->nodes[3].edges[1] = fig1->edges[11];
+    fig1->nodes[3].edges[1] = &fig1->edges[11];
     fig1->edges[12].weight = 14;
     fig1->edges[12].first = &fig1->nodes[3];
     fig1->edges[12].second = &fig1->nodes[5];
-    fig1->nodes[3].edges[2] = fig1->edges[12];
+    fig1->nodes[3].edges[2] = &fig1->edges[12];
     fig1->nodes[4].numEdges = 2;
-    fig1->nodes[4].edges = (Edge*)malloc(sizeof(Edge)*2);
-    fig1->nodes[4].edges[0] = fig1->edges[11];
+    fig1->nodes[4].edges[0] = &fig1->edges[11];
     fig1->edges[13].weight = 10;
     fig1->edges[13].first = &fig1->nodes[4];
     fig1->edges[13].second = &fig1->nodes[5];
-    fig1->nodes[4].edges[1] = fig1->edges[13];
+    fig1->nodes[4].edges[1] = &fig1->edges[13];
     fig1->nodes[5].numEdges = 4;
-    fig1->nodes[5].edges = (Edge*)malloc(sizeof(Edge)*4);
-    fig1->nodes[5].edges[0] = fig1->edges[10];
-    fig1->nodes[5].edges[1] = fig1->edges[9];
-    fig1->nodes[5].edges[2] = fig1->edges[12];
-    fig1->nodes[5].edges[3] = fig1->edges[13];
+    fig1->nodes[5].edges[0] = &fig1->edges[10];
+    fig1->nodes[5].edges[1] = &fig1->edges[9];
+    fig1->nodes[5].edges[2] = &fig1->edges[12];
+    fig1->nodes[5].edges[3] = &fig1->edges[13];
 
     //Convert fig1 into an adjacency matrix and print
     int** fig1Matrix = convertToMatrix(fig1);

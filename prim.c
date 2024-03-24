@@ -35,18 +35,18 @@ struct listNode{
     int weight;
 };
 
-void addEdgeToNode(Node* node, Edge* edge){
-    node->numEdges++;
-    if(node->edges == NULL){
-        node->edges = (Edge*)malloc(sizeof(Edge));
-        node->edges[0] = *edge;
+void addEdgeToNode(Graph* G, int nodeIndex, int edgeIndex){
+    G->nodes[nodeIndex].numEdges++;
+    if(G->nodes[nodeIndex].edges == NULL){
+        G->nodes[nodeIndex].edges = (Edge*)malloc(sizeof(Edge));
+        G->nodes[nodeIndex].edges[0] = G->edges[edgeIndex];
     }
     else{
-        Edge* newEdges = (Edge*)malloc(sizeof(Edge)*node->numEdges);
-        for(int i=0; i<node->numEdges-1; i++){
-            newEdges[i] = node->edges[i];
+        Edge* newEdges = (Edge*)malloc(sizeof(Edge)*G->nodes[nodeIndex].numEdges);
+        for(int i=0; i<G->nodes[nodeIndex].numEdges-1; i++){
+            newEdges[i] = G->nodes[nodeIndex].edges[i];
         }
-        newEdges[node->numEdges-1] = *edge;
+        newEdges[G->nodes[nodeIndex].numEdges-1] = G->edges[edgeIndex];
     }
 }
 
@@ -87,26 +87,26 @@ Graph* generateGraph(int n, int graphDensity){
         graph->edges[i].weight = rand()%30+1;
         graph->edges[i].first = graph->nodes[i];
         graph->edges[i].second = graph->nodes[j];
-        addEdgeToNode(&graph->nodes[i], &graph->edges[i]);
-        addEdgeToNode(&graph->nodes[j], &graph->edges[i]);
+        addEdgeToNode(graph, i, i);
+        addEdgeToNode(graph, j, i);
         j++;
     }
     //Link the first and last nodes
     graph->edges[n-1].weight = rand()%30+1;
     graph->edges[n-1].first = graph->nodes[n-1];
     graph->edges[n-1].second = graph->nodes[0];
-    addEdgeToNode(&graph->nodes[n-1], &graph->edges[n-1]);
-    addEdgeToNode(&graph->nodes[0], &graph->edges[n-1]);
+    addEdgeToNode(graph, n-1, n-1);
+    addEdgeToNode(graph, 0, n-1);
 
     //Add any remaining edges
     for(int i=0; i<m-n; i++){
         graph->edges[n+i].weight = rand()%30+1;
-        Node* node1 = &graph->nodes[rand()%n];
-        Node* node2 = &graph->nodes[rand()%n];
-        graph->edges[n+i].first = *node1;
-        graph->edges[n+i].second = *node2;
-        addEdgeToNode(node1, &graph->edges[n+i]);
-        addEdgeToNode(node2, &graph->edges[n+i]);
+        int node1Index = rand()%n;
+        int node2Index = rand()%n;
+        graph->edges[n+i].first = graph->nodes[node1Index];
+        graph->edges[n+i].second = graph->nodes[node2Index];
+        addEdgeToNode(graph, node1Index, n+i);
+        addEdgeToNode(graph, node2Index, n+i);
     }
 
     return graph;

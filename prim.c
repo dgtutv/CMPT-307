@@ -102,11 +102,11 @@ int** convertToMatrix(Graph* G){
         for(int j=0; j<G->numNodes; j++){
             //Look for edges between i and j         
             for(int k = 0; k < G->numEdges; k++){
-                if(G->edges[k].first.index == i && G->edges[k].second.index == j){
+                if(G->edges[k].first->index == i && G->edges[k].second->index == j){
                     outputMatrix[i][j] = G->edges[k].weight;
                     break; 
                 }
-                else if(G->edges[k].first.index == j && G->edges[k].second.index == i){
+                else if(G->edges[k].first->index == j && G->edges[k].second->index == i){
                     outputMatrix[i][j] = G->edges[k].weight;
                     break; 
                 }
@@ -132,10 +132,10 @@ listNode** convertToList(Graph* G){
 
             listNode* newNode = (listNode*)malloc(sizeof(listNode));
             //Find if the connected node is the first or second node of the current edge
-            if(currentEdge.first.index == i){
-                newNode->index = currentEdge.second.index;
+            if(currentEdge.first->index == i){
+                newNode->index = currentEdge.second->index;
             } else {
-                newNode->index = currentEdge.first.index;
+                newNode->index = currentEdge.first->index;
             }
             newNode->weight = currentEdge.weight;
             newNode->next = NULL;
@@ -297,85 +297,85 @@ int main(){
     }   
     fig1->nodes[0].numEdges = 2;
     fig1->edges[0].weight = 4;
-    fig1->edges[0].first = fig1->nodes[0];
-    fig1->edges[0].second = fig1->nodes[1];
+    fig1->edges[0].first = &fig1->nodes[0];
+    fig1->edges[0].second = &fig1->nodes[1];
     fig1->nodes[0].edges = (Edge*)malloc(sizeof(Edge)*2);
     fig1->nodes[0].edges[0] = fig1->edges[0];
     fig1->edges[1].weight = 8;
-    fig1->edges[1].first = fig1->nodes[0];
-    fig1->edges[1].second = fig1->nodes[7];
+    fig1->edges[1].first = &fig1->nodes[0];
+    fig1->edges[1].second = &fig1->nodes[7];
     fig1->nodes[0].edges[1] = fig1->edges[1];
     fig1->nodes[1].numEdges = 3;
     fig1->nodes[1].edges = (Edge*)malloc(sizeof(Edge)*3);
     fig1->nodes[1].edges[0] = fig1->edges[0];
     fig1->edges[2].weight = 8;
-    fig1->edges[2].first = fig1->nodes[1];
-    fig1->edges[2].second = fig1->nodes[2];
+    fig1->edges[2].first = &fig1->nodes[1];
+    fig1->edges[2].second = &fig1->nodes[2];
     fig1->nodes[1].edges[1] = fig1->edges[2];
     fig1->edges[3].weight = 11;
-    fig1->edges[3].first = fig1->nodes[1];
-    fig1->edges[3].second = fig1->nodes[7];
+    fig1->edges[3].first = &fig1->nodes[1];
+    fig1->edges[3].second = &fig1->nodes[7];
     fig1->nodes[1].edges[2] = fig1->edges[3];
     fig1->nodes[7].numEdges = 4;
     fig1->nodes[7].edges = (Edge*)malloc(sizeof(Edge)*4);
     fig1->nodes[7].edges[0] = fig1->edges[1];
     fig1->nodes[7].edges[1] = fig1->edges[3];
     fig1->edges[4].weight = 7;
-    fig1->edges[4].first = fig1->nodes[7];
-    fig1->edges[4].second = fig1->nodes[8];
+    fig1->edges[4].first = &fig1->nodes[7];
+    fig1->edges[4].second = &fig1->nodes[8];
     fig1->nodes[7].edges[2] = fig1->edges[4];
     fig1->edges[5].weight = 1;
-    fig1->edges[5].first = fig1->nodes[7];
-    fig1->edges[5].second = fig1->nodes[6];
+    fig1->edges[5].first = &fig1->nodes[7];
+    fig1->edges[5].second = &fig1->nodes[6];
     fig1->nodes[7].edges[3] = fig1->edges[5];
     fig1->nodes[8].numEdges = 3;
     fig1->nodes[8].edges = (Edge*)malloc(sizeof(Edge)*3);
     fig1->nodes[8].edges[0] = fig1->edges[4];
     fig1->edges[6].weight = 2;
-    fig1->edges[6].first = fig1->nodes[8];
-    fig1->edges[6].second = fig1->nodes[2];
+    fig1->edges[6].first = &fig1->nodes[8];
+    fig1->edges[6].second = &fig1->nodes[2];
     fig1->nodes[8].edges[1] = fig1->edges[6];
     fig1->edges[7].weight = 6;
-    fig1->edges[7].first = fig1->nodes[8];
-    fig1->edges[7].second = fig1->nodes[6];
+    fig1->edges[7].first = &fig1->nodes[8];
+    fig1->edges[7].second = &fig1->nodes[6];
     fig1->nodes[8].edges[2] = fig1->edges[7];
     fig1->nodes[2].numEdges = 4;
     fig1->nodes[2].edges = (Edge*)malloc(sizeof(Edge)*4);
     fig1->nodes[2].edges[0] = fig1->edges[2];
     fig1->nodes[2].edges[1] = fig1->edges[6];
     fig1->edges[8].weight = 7;
-    fig1->edges[8].first = fig1->nodes[2];
-    fig1->edges[8].second = fig1->nodes[3];
+    fig1->edges[8].first = &fig1->nodes[2];
+    fig1->edges[8].second = &fig1->nodes[3];
     fig1->nodes[2].edges[2] = fig1->edges[8];
     fig1->edges[9].weight = 4;
-    fig1->edges[9].first = fig1->nodes[2];
-    fig1->edges[9].second = fig1->nodes[5];
+    fig1->edges[9].first = &fig1->nodes[2];
+    fig1->edges[9].second = &fig1->nodes[5];
     fig1->nodes[2].edges[3] = fig1->edges[9];
     fig1->nodes[6].numEdges = 3;
     fig1->nodes[6].edges = (Edge*)malloc(sizeof(Edge)*3);
     fig1->nodes[6].edges[0] = fig1->edges[5];
     fig1->nodes[6].edges[1] = fig1->edges[7];
     fig1->edges[10].weight = 2;
-    fig1->edges[10].first = fig1->nodes[6];
-    fig1->edges[10].second = fig1->nodes[5];
+    fig1->edges[10].first = &fig1->nodes[6];
+    fig1->edges[10].second = &fig1->nodes[5];
     fig1->nodes[6].edges[2] = fig1->edges[10];
     fig1->nodes[3].numEdges = 3;
     fig1->nodes[3].edges = (Edge*)malloc(sizeof(Edge)*3);
     fig1->nodes[3].edges[0] = fig1->edges[8];
     fig1->edges[11].weight = 9;
-    fig1->edges[11].first = fig1->nodes[3];
-    fig1->edges[11].second = fig1->nodes[4];
+    fig1->edges[11].first = &fig1->nodes[3];
+    fig1->edges[11].second = &fig1->nodes[4];
     fig1->nodes[3].edges[1] = fig1->edges[11];
     fig1->edges[12].weight = 14;
-    fig1->edges[12].first = fig1->nodes[3];
-    fig1->edges[12].second = fig1->nodes[5];
+    fig1->edges[12].first = &fig1->nodes[3];
+    fig1->edges[12].second = &fig1->nodes[5];
     fig1->nodes[3].edges[2] = fig1->edges[12];
     fig1->nodes[4].numEdges = 2;
     fig1->nodes[4].edges = (Edge*)malloc(sizeof(Edge)*2);
     fig1->nodes[4].edges[0] = fig1->edges[11];
     fig1->edges[13].weight = 10;
-    fig1->edges[13].first = fig1->nodes[4];
-    fig1->edges[13].second = fig1->nodes[5];
+    fig1->edges[13].first = &fig1->nodes[4];
+    fig1->edges[13].second = &fig1->nodes[5];
     fig1->nodes[4].edges[1] = fig1->edges[13];
     fig1->nodes[5].numEdges = 4;
     fig1->nodes[5].edges = (Edge*)malloc(sizeof(Edge)*4);

@@ -18,8 +18,8 @@ struct Node{
 
 struct Edge{
     int weight;
-    Node first;
-    Node second;
+    Node* first;
+    Node* second;
 };
 
 struct Graph{
@@ -35,78 +35,52 @@ struct listNode{
     int weight;
 };
 
-void addEdgeToNode(Graph* G, int nodeIndex, int edgeIndex){
+void addEdgeToNode(Graph* G, int nodeIndex, int edgeIndex) {
     G->nodes[nodeIndex].numEdges++;
-    if(G->nodes[nodeIndex].edges == NULL){
-        G->nodes[nodeIndex].edges = (Edge*)malloc(sizeof(Edge));
-        G->nodes[nodeIndex].edges[0] = G->edges[edgeIndex];
-    }
-    else{
-        Edge* newEdges = (Edge*)malloc(sizeof(Edge)*G->nodes[nodeIndex].numEdges);
-        for(int i=0; i<G->nodes[nodeIndex].numEdges-1; i++){
-            newEdges[i] = G->nodes[nodeIndex].edges[i];
-        }
-        newEdges[G->nodes[nodeIndex].numEdges-1] = G->edges[edgeIndex];
-    }
+    G->nodes[nodeIndex].edges = (Edge*)realloc(G->nodes[nodeIndex].edges, sizeof(Edge)*G->nodes[nodeIndex].numEdges);
+    G->nodes[nodeIndex].edges[G->nodes[nodeIndex].numEdges - 1] = G->edges[edgeIndex];
 }
 
-Graph* generateGraph(int n, int graphDensity){
+Graph* generateGraph(int n, int graphDensity) {
     int m;
     Graph* graph = (Graph*)malloc(sizeof(Graph));
     graph->nodes = (Node*)malloc(sizeof(Node)*n);
     graph->numNodes = n;
 
-    //Initialize our random number generator
-    time_t t;
-    srand((unsigned) time(&t));
+    //Initialize our random number generator.
+    srand((unsigned)time(NULL));
 
-    //Define our number of edges
-    switch(graphDensity){
-        case 0:
-            m = 3*n;
-            break;
-        case 1:
-            m = floor(pow(n, 1.5));
-            break;
-        case 2:
-            m = floor((n*(n-1))/2);
+    //Define our number of edges based on the graph density.
+    switch(graphDensity) {
+        case 0: m = 3 * n; break;
+        case 1: m = (int)floor(pow(n, 1.5)); break;
+        case 2: m = (int)floor((n*(n-1))/2); break;
+        default: m = 3 * n; //Default case to avoid uninitialized use.
     }
     graph->numEdges = m;
-    graph->edges = (Edge*)malloc(sizeof(Edge)*m);
+    graph->edges = (Edge*)malloc(sizeof(Edge) * m);
 
-    //Initialize our nodes
-    for(int i=0; i<n; i++){
+    // Initialize nodes.
+    for(int i=0; i<n; i++) {
+        graph->nodes[i].index = i;
         graph->nodes[i].edges = NULL;
         graph->nodes[i].numEdges = 0;
-        graph->nodes[i].index = i;
     }
 
-    //Make a connected graph (link all nodes in a cycle)
-    int j=1;
-    for(int i=0; j<n; i++){
-        graph->edges[i].weight = rand()%30+1;
-        graph->edges[i].first = graph->nodes[i];
-        graph->edges[i].second = graph->nodes[j];
-        addEdgeToNode(graph, i, i);
-        addEdgeToNode(graph, j, i);
-        j++;
-    }
-    //Link the first and last nodes
-    graph->edges[n-1].weight = rand()%30+1;
-    graph->edges[n-1].first = graph->nodes[n-1];
-    graph->edges[n-1].second = graph->nodes[0];
-    addEdgeToNode(graph, n-1, n-1);
-    addEdgeToNode(graph, 0, n-1);
-
-    //Add any remaining edges
-    for(int i=0; i<m-n; i++){
-        graph->edges[n+i].weight = rand()%30+1;
-        int node1Index = rand()%n;
-        int node2Index = rand()%n;
-        graph->edges[n+i].first = graph->nodes[node1Index];
-        graph->edges[n+i].second = graph->nodes[node2Index];
-        addEdgeToNode(graph, node1Index, n+i);
-        addEdgeToNode(graph, node2Index, n+i);
+    // Create edges and link nodes.
+    for(int i=0; i<m; i++) {
+        int node1Index = rand() % n;
+        int node2Index = rand() % n;
+        while(node2Index == node1Index) { //Ensure we don't link a node to itself.
+            node2Index = rand() % n;
+        }
+        
+        graph->edges[i].weight = rand() % 30 + 1;
+        graph->edges[i].first = &graph->nodes[node1Index];
+        graph->edges[i].second = &graph->nodes[node2Index];
+        
+        addEdgeToNode(graph, node1Index, i);
+        addEdgeToNode(graph, node2Index, i);
     }
 
     return graph;

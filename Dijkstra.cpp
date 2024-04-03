@@ -9,8 +9,10 @@ class Edge{
     public:
     vector<Node*> nodes;
     int index;
+    int weight;
     Edge(int index){
         this->index = index;
+        this->weight = rand() % 50;
     }
 };
 
@@ -42,9 +44,6 @@ class Graph{
     }
 
     void generate(){
-        //Initialize our random number generator
-        srand((unsigned)time(NULL));
-
         //Initialize all of our nodes
         for(int i=0; i<numNodes; i++){
             Node* currentNode = new Node(i);
@@ -112,6 +111,7 @@ class Graph{
         cout << endl << "Edges:" << endl;
         for(Edge* currentEdge : edges){
             cout << " index: " << currentEdge->index << endl;
+            cout << " weight: " << currentEdge->weight << endl;
             cout << " Nodes: " << endl;
             for(Node* currentNode : currentEdge->nodes){
                 cout << "  index: " << currentNode->index << endl;
@@ -122,6 +122,9 @@ class Graph{
 };
 
 int main(){
+    //Initialize our random number generator
+    srand((unsigned)time(NULL));
+
     //Testing Graph.generate for the base graph
     Graph* currentGraph = new Graph(5, 2);
     currentGraph->generate();

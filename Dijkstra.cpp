@@ -55,15 +55,13 @@ class Graph{
             Edge* currentEdge = new Edge(i);
             edges.push_back(currentEdge);
             currentEdge->nodes.push_back(nodes[i]);
-            nodes[i]->numEdges = 2;
-            nodes[i]->edges.push_back(currentEdge);
+            nodes[i]->numEdges = 1;
+            nodes[i]->edges.push_back(currentEdge); //Only add the edge to the node in which the edge points from 
             if(i < numNodes-1){
                 currentEdge->nodes.push_back(nodes[i+1]);
-                nodes[i+1]->edges.push_back(currentEdge);
             }
             else{   //If the last edge in making our connected graph, link to the first node
                 currentEdge->nodes.push_back(nodes[0]);
-                nodes[0]->edges.push_back(currentEdge);
             }
         }
 
@@ -85,9 +83,7 @@ class Graph{
             currentEdge->nodes.push_back(node1);
             currentEdge->nodes.push_back(node2);
             node1->numEdges++;
-            node2->numEdges++;
-            node1->edges.push_back(currentEdge);
-            node2->edges.push_back(currentEdge);
+            node1->edges.push_back(currentEdge);    //Only add the edge to the node in which the edge is pointing from
         }
     }
 
@@ -138,10 +134,6 @@ class Graph{
                 //Look for edges between i and j
                 for(int k=0; k<numEdges; k++){
                     if(edges[k]->nodes[0]->index == i && edges[k]->nodes[1]->index == j){
-                        outputMatrix[i][j] = edges[k]->weight;
-                        break;
-                    }
-                    else if(edges[k]->nodes[0]->index == j && edges[k]->nodes[1]->index == i){
                         outputMatrix[i][j] = edges[k]->weight;
                         break;
                     }

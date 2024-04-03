@@ -9,7 +9,7 @@
       "stopAtEntry": false,
       "externalConsole": false,
       "cwd": "/home/dgtutv/CMPT 307", // Make sure this path is correct
-      "program": "/home/dgtutv/CMPT 307/prim", // Adjust this to the path of your compiled executable
+      "program": "/home/dgtutv/CMPT 307/Dijkstra", // Adjust this to the path of your compiled executable
       "MIMode": "gdb",
       "miDebuggerPath": "/usr/bin/gdb", // Adjust this to the output from 'which gdb'
       "setupCommands": [

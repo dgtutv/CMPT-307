@@ -51,14 +51,14 @@ class Graph{
         }
 
         //Make a connected base graph of nodes
-        for(int i=0; i<numEdges; i++){
+        for(int i=0; i<numNodes; i++){
             Edge* currentEdge = new Edge(i);
             edges.push_back(currentEdge);
             currentEdge->numNodes = 2;
             currentEdge->nodes.push_back(nodes[i]);
             nodes[i]->numEdges = 2;
             nodes[i]->edges.push_back(currentEdge);
-            if(i < numEdges-1){
+            if(i < numNodes-1){
                 currentEdge->nodes.push_back(nodes[i+1]);
                 nodes[i+1]->edges.push_back(currentEdge);
             }
@@ -78,23 +78,25 @@ class Graph{
         //Print all of the nodes, with what edges are connected 
         cout << "Nodes:" << endl;
         for(Node* currentNode : nodes){
-            cout << "\tindex: " << currentNode->index << endl;
-            cout << "\tnumEdges: " << currentNode->numEdges << endl;
-            cout << "\tEdges: " << endl;
+            cout << " index: " << currentNode->index << endl;
+            cout << " numEdges: " << currentNode->numEdges << endl;
+            cout << " Edges: " << endl;
             for(Edge* currentEdge : currentNode->edges){
-                cout << "\t\tindex: " << currentEdge->index << endl;
+                cout << "  index: " << currentEdge->index << endl;
             }
+            cout << endl;
         }
 
         //Print all edges, with all the nodes that are connected
         cout << endl << "Edges:" << endl;
         for(Edge* currentEdge : edges){
-            cout << "\tindex: " << currentEdge->index << endl;
-            cout << "\tnumNodes: " << currentEdge->numNodes << endl;
-            cout << "Nodes: " << endl;
+            cout << " index: " << currentEdge->index << endl;
+            cout << " numNodes: " << currentEdge->numNodes << endl;
+            cout << " Nodes: " << endl;
             for(Node* currentNode : currentEdge->nodes){
-                cout << "\t\tindex: " << currentNode->index << endl;
+                cout << "  index: " << currentNode->index << endl;
             }
+            cout << endl;
         }
     }
 };

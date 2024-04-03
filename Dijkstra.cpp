@@ -119,15 +119,43 @@ class Graph{
             cout << endl;
         }
     }
+
+    //Gives the adjacency matrix representation for the graph
+    int** getMatrixRepresentation(){
+        //Allocate memory for our matrix
+        int** outputMatrix = (int**)malloc(numNodes*sizeof(int*));
+        for(int i=0; i<numNodes; i++){
+            outputMatrix[i] = (int*)malloc(numNodes*sizeof(int));
+            //Initialize each cell to 0
+            for(int j=0; j<numNodes; j++){
+                outputMatrix[i][j] = 0;
+            }
+        }
+
+        //Iterate over our matrix
+        for(int i=0; i<numNodes; i++){
+            for(int j=0; j<numNodes; j++){
+                //Look for edges between i and j
+                for(int k=0; k<numEdges; k++){
+                    if(edges[k]->nodes[0]->index == i && edges[k]->nodes[1]->index == j){
+                        outputMatrix[i][j] = edges[k]->weight;
+                        break;
+                    }
+                    else if(edges[k]->nodes[0]->index == j && edges[k]->nodes[1]->index == i){
+                        outputMatrix[i][j] = edges[k]->weight;
+                        break;
+                    }
+                }
+            }
+        }
+        return outputMatrix;
+    }
 };
 
 int main(){
     //Initialize our random number generator
     srand((unsigned)time(NULL));
+    
 
-    //Testing Graph.generate for the base graph
-    Graph* currentGraph = new Graph(5, 2);
-    currentGraph->generate();
-    currentGraph->print();
     return 0;
 }

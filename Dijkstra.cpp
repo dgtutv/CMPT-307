@@ -39,7 +39,7 @@ class Graph{
             case 0: this->numEdges = 3 * numNodes; break;
             case 1: this->numEdges = (int)floor(pow(numNodes, 1.5)); break;
             case 2: this->numEdges = (int)floor((numNodes*(numNodes-1))/2); break;
-            default: this->numEdges = 3 * numNodes;
+            default: this->numEdges = density;
         }
     }
 
@@ -156,6 +156,9 @@ int main(){
     //Initialize our random number generator
     srand((unsigned)time(NULL));
     
+
+    //Create a graph representing Figure 1
+    Graph* figure1 = new Graph()
 
     return 0;
 }

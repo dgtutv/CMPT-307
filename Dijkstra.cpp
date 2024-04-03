@@ -7,7 +7,7 @@ class Node;
 
 class Edge{
     public:
-    vector<Node*> nodes;
+    vector<Node*> nodes;    //Directed1: nodes[0] --weight--> nodes[1]
     int index;
     int weight;
     Edge(int index){
@@ -157,8 +157,44 @@ int main(){
     srand((unsigned)time(NULL));
     
 
-    //Create a graph representing Figure 1
-    Graph* figure1 = new Graph()
+    //----------------Create a graph representing Figure 1-----------
+    Graph* figure1 = new Graph(5, 10);
+
+    //Initialize our nodes
+    for(int i=0; i<figure1->numNodes; i++){ 
+        Node* currentNode = new Node(i);
+        figure1->nodes.push_back(currentNode);
+    }
+
+    //Initialize our edges
+    for(int i=0; i<figure1->numEdges; i++){
+        Edge* currentEdge = new Edge(i);
+        figure1->edges.push_back(currentEdge);
+    }
+
+    //Label our nodes according to figure 1
+    Node* s = figure1->nodes[0];
+    Node* t = figure1->nodes[1];
+    Node* x = figure1->nodes[2];
+    Node* y = figure1->nodes[3];
+    Node* z = figure1->nodes[4];
+
+    //Edges for s
+    s->numEdges = 2;
+    figure1->edges[0]->weight = 10;
+    figure1->edges[0]->nodes.push_back(s);
+    figure1->edges[0]->nodes.push_back(t);
+    s->edges.push_back(figure1->edges[0]);
+    t->edges.push_back(figure1->edges[0]);
+
+    figure1->edges[1]->weight = 5;
+    figure1->edges[1]->nodes.push_back(s);
+    figure1->edges[1]->nodes.push_back(y);
+    s->edges.push_back(figure1->edges[1]);
+    y->edges.push_back(figure1->edges[1]);
+
+    //Edges for t
+    t->numEdges = 4;
 
     return 0;
 }

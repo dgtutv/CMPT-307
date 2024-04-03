@@ -87,10 +87,22 @@ class Graph{
         }
 
         //Print all edges, with all the nodes that are connected
-
+        cout << endl << "Edges:" << endl;
+        for(Edge* currentEdge : edges){
+            cout << "\tindex: " << currentEdge->index << endl;
+            cout << "\tnumNodes: " << currentEdge->numNodes << endl;
+            cout << "Nodes: " << endl;
+            for(Node* currentNode : currentEdge->nodes){
+                cout << "\t\tindex: " << currentNode->index << endl;
+            }
+        }
     }
 };
 
-void main(){
+int main(){
     //Testing Graph.generate for the base graph
+    Graph* currentGraph = new Graph(5, 0);
+    currentGraph->generate();
+    currentGraph->print();
+    return 0;
 }

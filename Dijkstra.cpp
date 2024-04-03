@@ -65,7 +65,6 @@ class Graph{
             else{   //If the last edge in making our connected graph, link to the first node
                 currentEdge->nodes.push_back(nodes[0]);
                 nodes[0]->edges.push_back(currentEdge);
-                edges[0]->nodes.push_back(nodes[i]);
             }
             
         }
@@ -103,7 +102,7 @@ class Graph{
 
 int main(){
     //Testing Graph.generate for the base graph
-    Graph* currentGraph = new Graph(5, 0);
+    Graph* currentGraph = new Graph(5, 2);
     currentGraph->generate();
     currentGraph->print();
     return 0;

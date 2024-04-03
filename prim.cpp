@@ -37,7 +37,6 @@ struct listNode{
     int weight;
 };
 
-
 Graph* generateGraph(int n, int graphDensity) {
     int m;
     Graph* graph = (Graph*)malloc(sizeof(Graph));
@@ -57,13 +56,31 @@ Graph* generateGraph(int n, int graphDensity) {
     graph->numEdges = m;
     graph->edges = (Edge*)malloc(sizeof(Edge) * m);
 
-    //Initialize our nodes
+    // Initialize nodes.
+    for(int i=0; i<n; i++) {
+        graph->nodes[i].index = i;
+        graph->nodes[i].numEdges = 0;
+    }
 
-    //Initialize our edges
+    // Create edges and link nodes.
+    for(int i=0; i<m; i++) {
+        int node1Index = rand() % n;
+        int node2Index = rand() % n;
+        while(node2Index == node1Index) { //Ensure we don't link a node to itself.
+            node2Index = rand() % n;
+        }
+        
+        graph->edges[i].weight = rand() % 30 + 1;
+        graph->edges[i].first = &graph->nodes[node1Index];
+        graph->edges[i].second = &graph->nodes[node2Index];
+        graph->nodes[node1Index].numEdges++;
+        graph->nodes[node1Index].edges.push_back(&graph->edges[i]);
+        graph->nodes[node2Index].numEdges++;
+        graph->nodes[node2Index].edges.push_back(&graph->edges[i]);
+    }
 
     return graph;
 }
-
 int** convertToMatrix(Graph* G){
     //Allocate memory for an array of int pointers
     int** outputMatrix = (int**)malloc(G->numNodes * sizeof(int*));
@@ -175,6 +192,7 @@ void primArray(int numVertices, int** graph, bool print){
         mstSet[u] = true;
 
         for(int v = 0; v < numVertices; v++){
+            if(u == -1) break;
             if(graph[u][v] && graph[u][v] != INT_MAX && !mstSet[v] && graph[u][v] < key[v]){
                 parent[v] = u;
                 key[v] = graph[u][v];
@@ -208,6 +226,7 @@ void printMSTList(int parent[], int numVertices, listNode** graph){
 
 //Returns weight of edge if elgible to be added to MST, returns -1 upon failure
 int primEdgeCheck(listNode** graph, int u, int v, int key[], bool mstSet[]){
+    if(u == -1) return -1;
     listNode* curr = graph[u];
     while(curr != NULL){    //No weight or index set, seems to be an issue with generateGraph()
         if(curr->index == v && curr->weight != INT_MAX && !mstSet[v] && curr->weight < key[v]){
@@ -413,7 +432,7 @@ int main(){
     //Generate all the runtimes for each n and m provided
     double times[4][6];
     int i=0;
-    for(int n=100; n<1000; n=n*2){
+    for(int n=100; n<800; n=n*2){
         for(int j=0; j<3; j++){     //j determines m via switch case
             Graph* currentGraph = generateGraph(n, j);
             int** currentMatrix = convertToMatrix(currentGraph);
@@ -435,7 +454,7 @@ int main(){
     //Print our table of times for n and m specified
     printf("Runtime Table in milliseconds for specified n and m:\n");
     printf("\t\t\t\t Matrix \t\t\t\t List\n");
-    printf("\t\tm=3n\tm=n^1.5\tm=n(n-1)/2\tm=3n\tm=n^1.5\tm=n(n-1)/2");
+    printf("\t\tm=3n\tm=n^1.5\tm=n(n-1)/2\tm=3n\tm=n^1.5\tm=n(n-1)/2\n");
     i=0;
     for(int n=100; n<1000; n=n*2){
         printf("n=%d\t%f\t%f\t%f\t%f\t%f\t%f\n", n, times[i][0], times[i][1], times[i][2], times[i][3], times[i][4], times[i][5]);

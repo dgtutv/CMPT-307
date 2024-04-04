@@ -166,6 +166,37 @@ class Graph{
     }
 
     //Gives the adjacency list representation for the graph
+    listNode** getListRepresentation(){
+        //Allocate memory for the adjacency lists
+        listNode** adjacencyList = (listNode**)malloc(sizeof(listNode*) * numNodes);
+
+        //Iterate over each adjacency list, adding edges from the graph as needed
+        for(int i=0; i<numNodes; i++){
+            listNode* head = NULL;
+            listNode* priorNode = NULL;
+
+            //Iterate over the in our node, and adding them to our list
+            for(int j=0; j<nodes[i]->numEdges; j++){
+                Edge* currentEdge = nodes[i]->edges[j];
+                listNode* newNode = new listNode(currentEdge->nodes[0]->index, currentEdge->weight);
+
+                if(head == NULL){
+                    head = newNode;
+                    priorNode = head;
+                }
+
+                else{
+                    priorNode->next = newNode;
+                    priorNode = newNode;
+                }
+                
+            }
+
+            //Assign the head of this list to the adjacencyList
+            adjacencyList[i] = head;
+        }
+        return adjacencyList;
+    }
 
 };
 

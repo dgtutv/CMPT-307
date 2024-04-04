@@ -3,6 +3,7 @@
 #include <cmath>
 #include <iomanip>
 #include <climits>
+#include <ctime>
 
 using namespace std;
 class Node;
@@ -192,6 +193,15 @@ class Graph{
         return adjacencyList;
     }
 
+
+    ~Graph(){
+        for(Node* node : nodes){
+            free(node);
+        }
+        for(Edge* edge: edges){
+            free(edge);
+        }
+    }
 };
 
 //Prints a matrix in a neat, tabular format
@@ -313,6 +323,20 @@ void printDijkstra(tuple<int*, int*> shortestPaths, int n){
 }
 
 int main(){
+    //Create our timing variables
+    clock_t start, end;
+    double fig1Times[2];
+    double timeTable[4][6];
+
+    //Initialize our runtime tables
+    fig1Times[0] = -1;
+    fig1Times[1] = -1;
+    for(int i=0; i<4; i++){
+        for(int j=0; j<6; j++){
+            timeTable[i][j] = -1;
+        }
+    }
+
     //Initialize our random number generator
     srand((unsigned)time(NULL));
     
@@ -405,16 +429,59 @@ int main(){
     int** fig1Matrix = figure1->getMatrixRepresentation();
     cout << "Figure 1 Adjacency Matrix: " << endl;
     printMatrix(fig1Matrix, figure1->numNodes, figure1->numNodes); 
+    start = clock();
     tuple<int*, int*> fig1DijkstraArray = DijkstraArray(fig1Matrix, 0, figure1->numNodes);
+    end = clock();
+    fig1Times[0] = ((double)(end-start)) / CLOCKS_PER_SEC * 1000;
     cout << endl << "Dijkstra's on adjacency array of figure 1" << endl; 
     printDijkstra(fig1DijkstraArray, figure1->numNodes);
 
     listNode** fig1List = figure1->getListRepresentation();
     cout << endl << "Figure 1 Adjacency List: " << endl;
     printList(fig1List, figure1->numNodes);
+    start = clock();
     tuple<int*, int*> fig1DijkstraList = DijkstraList(fig1List, 0, figure1->numNodes);
+    end = clock();
+    fig1Times[1] = ((double)(end-start)) / CLOCKS_PER_SEC * 1000;
     cout << endl << "Dijkstra's on adjacency list of figure 1" << endl; 
     printDijkstra(fig1DijkstraList, figure1->numNodes);
+
+
+    //Print our table of times for figure 1
+    cout << endl << "Runtime Table in milliseconds for figure 1:" << endl;
+    cout << "\t\tMatrix \t\tList\nFigure 1:" << "\t" << fig1Times[0] << "\t\t" << fig1Times[1] << endl;
+
+    //Generate all the runtimes for each n and m provided
+    int i=0;
+    for(int n=100; n<1000; n=n*2){
+        for(int j=0; j<3; j++){     //j determines m via switch case
+            Graph* currentGraph = new Graph(n, j);
+            currentGraph->generate();
+            int** currentMatrix = currentGraph->getMatrixRepresentation();
+
+            start = clock();
+            DijkstraArray(currentMatrix, 0, currentGraph->numNodes);
+            end = clock();
+            timeTable[i][j] = ((double) (end - start)) / CLOCKS_PER_SEC * 1000;
+
+            listNode** currentList = currentGraph->getListRepresentation();
+            start = clock();
+            DijkstraList(currentList, 0, currentGraph->numNodes);
+            end = clock();
+            timeTable[i][j+2] = ((double) (end - start)) / CLOCKS_PER_SEC * 1000;
+        }
+        i++;
+    }
+
+    //Print our table of times for n and m specified
+    cout << endl << "Runtime Table in milliseconds for specified n and m:" << endl;
+    cout << "\t\t\t\t Matrix \t\t\t\t List" << endl;
+    cout << "\t\tm=3n\tm=n^1.5\tm=n(n-1)/2\tm=3n\tm=n^1.5\tm=n(n-1)/2" << endl;
+    i=0;
+    for(int n=100; n<1000; n=n*2){
+        printf("n=%d\t%f\t%f\t%f\t%f\t%f\t%f\n", n, timeTable[i][0], timeTable[i][1], timeTable[i][2], timeTable[i][3], timeTable[i][4], timeTable[i][5]);
+        i++;
+    }
 
     return 0;
 }

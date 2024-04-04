@@ -165,6 +165,7 @@ class Graph{
         return outputMatrix;
     }
 
+    //TODO: add each lists own node with weight 0, and have the indices represent the nodes we are pointing to 
     //Gives the adjacency list representation for the graph
     listNode** getListRepresentation(){
         //Allocate memory for the adjacency lists
@@ -172,24 +173,16 @@ class Graph{
 
         //Iterate over each adjacency list, adding edges from the graph as needed
         for(int i=0; i<numNodes; i++){
-            listNode* head = NULL;
-            listNode* priorNode = NULL;
+            listNode* head = new listNode(i, 0);
+            listNode* priorNode = head;
 
-            //Iterate over the in our node, and adding them to our list
+
+            //Iterate over the edges in our node, and adding them to our list
             for(int j=0; j<nodes[i]->numEdges; j++){
                 Edge* currentEdge = nodes[i]->edges[j];
-                listNode* newNode = new listNode(currentEdge->nodes[0]->index, currentEdge->weight);
-
-                if(head == NULL){
-                    head = newNode;
-                    priorNode = head;
-                }
-
-                else{
-                    priorNode->next = newNode;
-                    priorNode = newNode;
-                }
-                
+                listNode* newNode = new listNode(currentEdge->nodes[1]->index, currentEdge->weight);
+                priorNode->next = newNode;
+                priorNode = newNode;
             }
 
             //Assign the head of this list to the adjacencyList
@@ -217,14 +210,12 @@ void printList(listNode** list, int numLists){
         listNode* curr = list[i];
         while(curr != NULL){
             cout << "[" << curr->index << ":" << curr->weight << "]";
-            if(i < numLists-1){
+            if(curr->next != NULL){
                 cout << "-->";
             }
-            else{
-                cout << endl;
-            }
             curr = curr->next;
-        }          
+        } 
+        cout << endl;         
     }
 }
 
@@ -321,6 +312,7 @@ int main(){
     cout << "Figure 1 Adjacency Matrix: " << endl;
     printMatrix(fig1Matrix, figure1->numNodes, figure1->numNodes);   
     listNode** fig1List = figure1->getListRepresentation();
-    printList(fig1List, figure1->numEdges);
+    cout << endl << "Figure 1 Adjacency List: " << endl;
+    printList(fig1List, figure1->numNodes);
     return 0;
 }

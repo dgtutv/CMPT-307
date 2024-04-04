@@ -116,6 +116,16 @@ class Graph{
         }
     }
 
+    //From chatGPT to visualize the graph easier
+    void printDotFormat(){
+        cout << "digraph G {" << endl;
+        for(Edge* currentEdge : edges){
+            cout << "    " << currentEdge->nodes[0]->index << " -> " << currentEdge->nodes[1]->index;
+            cout << " [label=" << currentEdge->weight << "];" << endl;
+        }
+        cout << "}" << endl;
+    }   
+
     //Gives the adjacency matrix representation for the graph
     int** getMatrixRepresentation(){
         //Allocate memory for our matrix
@@ -177,16 +187,60 @@ int main(){
     figure1->edges[0]->nodes.push_back(s);
     figure1->edges[0]->nodes.push_back(t);
     s->edges.push_back(figure1->edges[0]);
-    t->edges.push_back(figure1->edges[0]);
 
     figure1->edges[1]->weight = 5;
     figure1->edges[1]->nodes.push_back(s);
     figure1->edges[1]->nodes.push_back(y);
     s->edges.push_back(figure1->edges[1]);
-    y->edges.push_back(figure1->edges[1]);
 
     //Edges for t
-    t->numEdges = 4;
+    t->numEdges = 2;
+    figure1->edges[2]->weight = 2;
+    figure1->edges[2]->nodes.push_back(t);
+    figure1->edges[2]->nodes.push_back(y);
+    t->edges.push_back(figure1->edges[2]);
 
+    figure1->edges[3]->weight = 1;
+    figure1->edges[3]->nodes.push_back(t);
+    figure1->edges[3]->nodes.push_back(x);
+    t->edges.push_back(figure1->edges[3]);
+
+    //Edges for y
+    y->numEdges = 3;
+    figure1->edges[4]->weight = 3;
+    figure1->edges[4]->nodes.push_back(y);
+    figure1->edges[4]->nodes.push_back(t);
+    y->edges.push_back(figure1->edges[4]);
+
+    figure1->edges[5]->weight = 9;
+    figure1->edges[5]->nodes.push_back(y);
+    figure1->edges[5]->nodes.push_back(x);
+    y->edges.push_back(figure1->edges[5]);
+
+    figure1->edges[6]->weight = 2;
+    figure1->edges[6]->nodes.push_back(y);
+    figure1->edges[6]->nodes.push_back(z);
+    y->edges.push_back(figure1->edges[6]);
+
+    //Edges for x
+    x->numEdges = 1;
+    figure1->edges[7]->weight = 4;
+    figure1->edges[7]->nodes.push_back(x);
+    figure1->edges[7]->nodes.push_back(z);
+    x->edges.push_back(figure1->edges[7]);
+
+    //Edges for z
+    z->numEdges = 2;
+    figure1->edges[8]->weight = 6;
+    figure1->edges[8]->nodes.push_back(z);
+    figure1->edges[8]->nodes.push_back(x);
+    z->edges.push_back(figure1->edges[8]);
+
+    figure1->edges[9]->weight = 7;
+    figure1->edges[9]->nodes.push_back(z);
+    figure1->edges[9]->nodes.push_back(s);
+    z->edges.push_back(figure1->edges[9]);
+
+    figure1->printDotFormat();
     return 0;
 }

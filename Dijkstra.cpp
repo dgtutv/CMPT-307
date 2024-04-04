@@ -2,6 +2,7 @@
 #include <vector>
 #include <cmath>
 #include <iomanip>
+#include <climits>
 
 using namespace std;
 class Node;
@@ -219,6 +220,51 @@ void printList(listNode** list, int numLists){
     }
 }
 
+int calculateMinDistance(int distance[], bool visited[], int n){
+    int minimum = INT_MAX;
+    int index;
+    for(int i=0; i<n; i++){
+        if(!visited[i] && distance[i] <= minimum){
+            minimum = distance[i];
+            index = i;
+        }
+    }
+    return index;
+}
+
+int* DijkstraArray(int** matrix, int source, int n){    //n is the dimension of the matrix
+    int* distance = (int*)malloc(sizeof(int)*n);   //Min distance for each node, where each node is represented by it's index
+    bool visited[n];
+
+    //Initialize our distance and visited lists
+    for(int i=0; i<n; i++){
+        distance[i] = INT_MAX;
+        visited[i] = false;
+    }
+
+    distance[source] = 0; //Distance from source node to itself is 0
+
+    for(int i=0; i<n; i++){
+        int m = calculateMinDistance(distance, visited, n);
+        if(m == -1) continue;
+        visited[m] = true;
+        for(int j=0; j<n; j++){
+            //Update the distance of neighbouring vertex
+            if(!visited[j] && matrix[m][j] != 0 && distance[m] != INT_MAX && distance[m] + matrix[m][j] < distance[j]){
+                distance[j] = distance[m] + matrix[m][j];
+            }
+        }
+    }
+    return distance;
+}
+
+void printDijkstra(int* distance, int n){
+    cout << "Node, Distance to node from source" << endl;
+    for(int i=0; i<n; i++){
+        cout << i << ", " << distance[i] << endl;
+    }
+}
+
 int main(){
     //Initialize our random number generator
     srand((unsigned)time(NULL));
@@ -308,11 +354,17 @@ int main(){
 
     figure1->printDotFormat();
     cout << endl;
+
     int** fig1Matrix = figure1->getMatrixRepresentation();
     cout << "Figure 1 Adjacency Matrix: " << endl;
-    printMatrix(fig1Matrix, figure1->numNodes, figure1->numNodes);   
+    printMatrix(fig1Matrix, figure1->numNodes, figure1->numNodes); 
+    int* fig1DijkstraArray = DijkstraArray(fig1Matrix, 0, figure1->numNodes);
+    cout << endl << "Dijkstra's on array format of figure 1" << endl; 
+    printDijkstra(fig1DijkstraArray, figure1->numNodes);
+
     listNode** fig1List = figure1->getListRepresentation();
     cout << endl << "Figure 1 Adjacency List: " << endl;
     printList(fig1List, figure1->numNodes);
+
     return 0;
 }

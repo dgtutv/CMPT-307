@@ -260,6 +260,39 @@ tuple<int*, int*> DijkstraArray(int** matrix, int source, int n){    //n is the 
     }
     return make_tuple(distance, parent);
 }
+
+tuple<int*, int*> DijkstraList(listNode** lists, int source, int n){    //n is the dimension of the matrix
+    int* distance = (int*)malloc(sizeof(int)*n);   //Min distance for each node, where each node is represented by it's index
+    bool visited[n];
+    int* parent = (int*)malloc(sizeof(int)*n);
+
+    //Initialize our distance and visited lists
+    for(int i=0; i<n; i++){
+        distance[i] = INT_MAX;
+        visited[i] = false;
+        parent[i] = -1;
+    }
+
+    distance[source] = 0; //Distance from source node to itself is 0
+
+    for(int i=0; i<n; i++){
+        int m = calculateMinDistance(distance, visited, n);
+        if(m == -1) continue;
+        visited[m] = true;
+        listNode* curr = lists[m];  //Set curr to the head of our current list
+        while(curr != NULL){
+            //Update the distance of neighbouring vertex
+            int j = curr->index;
+            if(!visited[j] && curr->weight != 0 && distance[m] != INT_MAX && distance[m] + curr->weight < distance[j]){
+                distance[j] = distance[m] + curr->weight;
+                parent[j] = m;
+            }
+            curr = curr->next;
+        }
+    }
+    return make_tuple(distance, parent);
+}
+
 void printPath(int parent[], int vertex){
     if(vertex == -1){
         return;
@@ -379,6 +412,9 @@ int main(){
     listNode** fig1List = figure1->getListRepresentation();
     cout << endl << "Figure 1 Adjacency List: " << endl;
     printList(fig1List, figure1->numNodes);
+    tuple<int*, int*> fig1DijkstraList = DijkstraList(fig1List, 0, figure1->numNodes);
+    cout << endl << "Dijkstra's on adjacency list of figure 1" << endl; 
+    printDijkstra(fig1DijkstraList, figure1->numNodes);
 
     return 0;
 }

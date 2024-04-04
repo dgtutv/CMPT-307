@@ -28,6 +28,17 @@ class Node{
     }
 };
 
+class listNode{
+    public:
+    int index;
+    listNode* next;
+    int weight;
+    listNode(int index, int weight){
+        this->index = index;
+        this->weight = weight;
+    }
+};
+
 class Graph{
     public:
     int numNodes;
@@ -153,6 +164,9 @@ class Graph{
         }
         return outputMatrix;
     }
+
+    //Gives the adjacency list representation for the graph
+
 };
 
 //Prints a matrix in a neat, tabular format

@@ -210,6 +210,24 @@ void printMatrix(int** matrix, int length, int width){
     }
 }
 
+//Prints an adjacency list
+void printList(listNode** list, int numLists){
+    cout << "list#: [index:weight]-->[...]" << endl;
+    for(int i=0; i<numLists; i++){
+        listNode* curr = list[i];
+        while(curr != NULL){
+            cout << "[" << curr->index << ":" << curr->weight << "]";
+            if(i < numLists-1){
+                cout << "-->";
+            }
+            else{
+                cout << endl;
+            }
+            curr = curr->next;
+        }          
+    }
+}
+
 int main(){
     //Initialize our random number generator
     srand((unsigned)time(NULL));
@@ -302,5 +320,7 @@ int main(){
     int** fig1Matrix = figure1->getMatrixRepresentation();
     cout << "Figure 1 Adjacency Matrix: " << endl;
     printMatrix(fig1Matrix, figure1->numNodes, figure1->numNodes);   
+    listNode** fig1List = figure1->getListRepresentation();
+    printList(fig1List, figure1->numEdges);
     return 0;
 }

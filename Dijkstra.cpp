@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <iomanip>
 
 using namespace std;
 class Node;
@@ -154,6 +155,16 @@ class Graph{
     }
 };
 
+//Prints a matrix in a neat, tabular format
+void printMatrix(int** matrix, int length, int width){
+    for(int i=0; i<length; i++){
+        for(int j=0; j<width; j++){
+            cout << setw(2) << matrix[i][j] << " ";     //The width of each column is 2
+        }
+        cout << endl;
+    }
+}
+
 int main(){
     //Initialize our random number generator
     srand((unsigned)time(NULL));
@@ -242,5 +253,9 @@ int main(){
     z->edges.push_back(figure1->edges[9]);
 
     figure1->printDotFormat();
+    cout << endl;
+    int** fig1Matrix = figure1->getMatrixRepresentation();
+    cout << "Figure 1 Adjacency Matrix: " << endl;
+    printMatrix(fig1Matrix, figure1->numNodes, figure1->numNodes);   
     return 0;
 }
